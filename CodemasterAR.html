@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodemasterAR Glow Effect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
+
+        /* Custom Neon Glow CSS */
+        .neon-text {
+            font-family: 'Audiowide', cursive;
+            font-size: 5rem;
+            text-shadow:
+                0 0 5px #0ff,
+                0 0 10px #0ff,
+                0 0 20px #0ff,
+                0 0 40px #0ff,
+                0 0 80px #0ff,
+                0 0 90px #0ff,
+                0 0 100px #0ff,
+                0 0 150px #0ff;
+            color: #d1d5db; /* Tailwind gray-300 as base color */
+            transition: text-shadow 0.3s ease-out, opacity 0.3s ease-out;
+            opacity: 1; /* Initial full opacity */
+        }
+
+        /* Responsive font size */
+        @media (max-width: 768px) {
+            .neon-text {
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 flex items-center justify-center min-h-screen p-4">
+
+    <div class="text-center">
+        <!-- The container for the animated text -->
+        <h1 id="codemasterText" class="neon-text select-none"></h1>
+    </div>
+
+    <script>
+        // --- JavaScript for Typing and Fading Effect ---
+
+        const targetText = "CodemasterAR";
+        const textElement = document.getElementById('codemasterText');
+        let index = 0;
+        const typingSpeed = 150; // Milliseconds per character
+
+        // Function to set the glow intensity based on progress
+        function calculateGlow(currentLength) {
+            // Calculate a ratio (0 to 1) of how much of the word is typed
+            const ratio = currentLength / targetText.length;
+
+            // Base shadow color and size
+            const color = '#0ff';
+            const baseShadow = `0 0 5px ${color}, 0 0 10px ${color}`;
+
+            // Gradually decrease the max blur radius as the word finishes typing
+            // Starts around 150px, ends around 40px
+            const maxBlur = 150 - (110 * ratio);
+
+            // Create the full shadow string, reducing intensity as ratio increases
+            const shadow = `
+                ${baseShadow},
+                0 0 20px ${color},
+                0 0 40px ${color},
+                0 0 ${maxBlur}px ${color}
+            `;
+
+            textElement.style.textShadow = shadow;
+        }
+
+        // The main animation loop
+        function typeEffect() {
+            if (index < targetText.length) {
+                // Add the next character
+                textElement.textContent += targetText.charAt(index);
+
+                // Update the glow effect based on the current length
+                calculateGlow(index + 1);
+
+                index++;
+                // Continue typing
+                setTimeout(typeEffect, typingSpeed);
+            } else {
+                // Animation complete, reset glow to a stable, lower intensity
+                textElement.style.textShadow = '0 0 4px #0ff, 0 0 8px #0ff, 0 0 15px #0ff, 0 0 30px #0ff';
+            }
+        }
+
+        // Start the animation when the window loads
+        window.onload = function() {
+            // Add a slight delay before starting the effect
+            setTimeout(typeEffect, 500);
+        };
+    </script>
+
+</body>
+</html>
